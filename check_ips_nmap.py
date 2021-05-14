@@ -5,10 +5,12 @@ import json
 import socket
 from nmap import nmap
 
-def main():
-    pass
+'''
+    python version 3.8 or above
+    pip install python-nmap
+'''
 
-if __name__ == '__main__':
+def main():
      from optparse import OptionParser
      parser = OptionParser(usage='python %prog --ips --cred', prog=sys.argv[0],)
      parser.add_option("--ips",type="string",dest="ips")
@@ -24,10 +26,6 @@ if __name__ == '__main__':
          return tups
      ips_cred = merge(ips,cred)
      detail = dict()
-     try:
-         pass
-     except Exception as e:
-          print(e)
      for ip in ips:
          fi = nmap.PortScanner()
          fi.scan(ip)
@@ -36,18 +34,19 @@ if __name__ == '__main__':
          detail.update({ip:{'hnames':hnames}})
          network_interface = dict()
          for host in fi.all_hosts():
-             print('Host : %s (%s)' % (host, fi[host].hostname()))
-             print('State : %s' % fi[host].state())
+             #print('Host : %s (%s)' % (host, fi[host].hostname()))
+             #print('State : %s' % fi[host].state())
              for proto in fi[host].all_protocols():
-                 print('Protocol : %s' % proto)
+                 #print('Protocol : %s' % proto)
                  lport = list(fi[host][proto].keys())
                  lport.sort()
                  for port in lport:
-                     print ('port : %s\tstate : %s' % (port, fi[host][proto][port]['state']))
+                     #print ('port : %s\tstate : %s' % (port, fi[host][proto][port]['state']))
                      state = fi[host][proto][port]['state']
                      service = fi[host][proto][port]['name']
                      network_interface.update({port:{'service':service,'state':state}})
-         type(detail[ip])
          detail[ip]['n_int'] = network_interface
-         print(fi.csv())
-     print(detail)
+     return json.dumps(detail)
+
+if __name__ == '__main__':
+    print(main())
